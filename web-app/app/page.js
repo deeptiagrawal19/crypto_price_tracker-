@@ -1,3 +1,5 @@
+
+
 "use client";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -29,13 +31,13 @@ const fetchCryptoHistory = async (cryptoId) => {
   const latestPrice = data[data.length - 1]?.price || 0;
   const prevPrice = data[data.length - 2]?.price || latestPrice;
   const priceChange = (latestPrice - prevPrice).toFixed(2);
-  const priceChangePercent = ((priceChange / prevPrice) * 100).toFixed(2);
+  const priceChangePercent = prevPrice !== 0 ? ((priceChange / prevPrice) * 100).toFixed(2) : "0.00";
 
   return { data, latestPrice, priceChange, priceChangePercent };
 };
 
 export default function CryptoDashboard() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("");  
   const queryClient = useQueryClient();
 
   const cryptoQueries = CRYPTOS.map((crypto) =>
@@ -80,37 +82,49 @@ export default function CryptoDashboard() {
         </button>
       </div>
 
-      {/* Grid Layout for Filtered Cryptos */}
-      {filteredCryptos.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "20px", width: "90%", justifyContent: "center" }}>
-          {filteredCryptos.map((crypto, index) => {
-            const { data, latestPrice, priceChange, priceChangePercent } = cryptoQueries[index].data || {};
+      {/* Grid Layout for Cryptos + Market Summary */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "20px", width: "90%", justifyContent: "center" }}>
+        
+        {/* Market Summary Card */}
+        <div style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px", boxShadow: "0px 4px 6px rgba(255,255,255,0.1)", minWidth: "350px" }}>
+          <h2 style={{ fontSize: "22px", marginBottom: "10px", textAlign: "center" }}>Market Summary</h2>
+          {CRYPTOS.map((crypto, index) => {
+            const latestPrice = cryptoQueries[index].data?.latestPrice || "N/A";
             return (
-              <div key={crypto.id} style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px", boxShadow: "0px 4px 6px rgba(255,255,255,0.1)", minWidth: "350px" }}>
-                <h2 style={{ fontSize: "22px", marginBottom: "10px", textAlign: "center" }}>{crypto.name}</h2>
-                <p style={{ fontSize: "28px", fontWeight: "bold", textAlign: "center" }}>${latestPrice}</p>
-                <p style={{ textAlign: "center", color: priceChange >= 0 ? "#4CAF50" : "#FF4500", fontWeight: "bold" }}>
-                  {priceChange >= 0 ? "▲" : "▼"} {priceChange} ({priceChangePercent}%)
-                </p>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={data}>
-                    <XAxis dataKey="time" stroke="#8884d8" />
-                    <YAxis tickFormatter={(value) => `$${value}`} stroke="#8884d8" />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="price" stroke="#FF4500" strokeWidth={2} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+              <p key={crypto.id} style={{ fontSize: "18px", textAlign: "center", marginBottom: "5px" }}>
+                <strong>{crypto.name}</strong>: ${latestPrice}
+              </p>
             );
           })}
         </div>
-      ) : (
-        <p style={{ textAlign: "center", fontSize: "20px", marginTop: "20px", color: "#FF4500" }}>❌ No matching cryptocurrencies found.</p>
-      )}
+
+        {/* Crypto Cards */}
+        {filteredCryptos.map((crypto, index) => {
+          const { data, latestPrice, priceChange, priceChangePercent } = cryptoQueries[index].data || {};
+          return (
+            <div key={crypto.id} style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px", boxShadow: "0px 4px 6px rgba(255,255,255,0.1)", minWidth: "350px" }}>
+              <h2 style={{ fontSize: "22px", marginBottom: "10px", textAlign: "center" }}>{crypto.name}</h2>
+              <p style={{ fontSize: "28px", fontWeight: "bold", textAlign: "center" }}>${latestPrice}</p>
+              <p style={{ textAlign: "center", color: priceChange >= 0 ? "#4CAF50" : "#FF4500", fontWeight: "bold" }}>
+                {priceChange >= 0 ? "▲" : "▼"} {priceChange} ({priceChangePercent}%)
+              </p>
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={data}>
+                  <XAxis dataKey="time" stroke="#8884d8" />
+                  <YAxis tickFormatter={(value) => `$${value}`} stroke="#8884d8" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="price" stroke="#FF4500" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          );
+        })}
+
+      </div>
 
       {/* Market Volatility Bar Chart */}
       <div style={{ background: "#1E1E1E", padding: "20px", borderRadius: "10px", marginTop: "30px", width: "90%" }}>
-        <h2 style={{ textAlign: "center" }}>Crypto Market Volatility</h2>
+        <h2 style={{ textAlign: "center" }}>📊 Crypto Market Volatility</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={filteredCryptos.map((crypto, index) => ({
             name: crypto.name,
@@ -128,3 +142,6 @@ export default function CryptoDashboard() {
     </div>
   );
 }
+
+
+

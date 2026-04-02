@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BitPulse
 
-## Getting Started
+BitPulse is a small dashboard for watching cryptocurrency prices. The web app pulls live market data, charts short term price history, and keeps a simple market summary in one dark themed layout.
 
-First, run the development server:
+## What you get
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**Live prices and refresh.** Spot prices for Bitcoin, Ethereum, Dogecoin, Cardano, and Solana update on an interval and when you refocus the window. You can also trigger a manual refresh.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Charts.** Each asset has a line chart of recent prices (five minute intervals from CoinCap). A bar chart at the bottom compares latest prices across the tracked set.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Search.** Filter the card grid by name so you can focus on the coins you care about.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Market summary.** A compact panel lists the latest USD price for every tracked coin.
 
-## Learn More
+Data comes from the public [CoinCap API](https://docs.coincap.io/) (`api.coincap.io`). No API key is required for the endpoints this project uses.
 
-To learn more about Next.js, take a look at the following resources:
+## Tech stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The UI lives in `web-app/` and is built with **Next.js 15**, **React 19**, **TanStack React Query** for fetching and caching, **Axios** for HTTP, and **Recharts** for the charts. Styling is inline in the main page with a Tailwind oriented toolchain available for the rest of the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Documentation for the project (Docusaurus) lives in `docs/` if you want a separate doc site.
 
-## Deploy on Vercel
+## Run the app locally
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Install a current **Node.js** (18 or newer is a safe minimum).
+2. Open a terminal and go to the `web-app` folder inside this repository.
+3. Install dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   npm install
+   ```
+
+4. Start the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open the URL Next prints (usually `http://localhost:3000`).
+
+**Production build:** from `web-app`, run `npm run build` then `npm start`.
+
+## Run the docs site (optional)
+
+1. Go to the `docs` folder.
+2. Run `npm install` then `npm start` to preview the Docusaurus site locally.
+
+## License
+
+This repository is provided as a personal / learning project unless you add your own license file.
