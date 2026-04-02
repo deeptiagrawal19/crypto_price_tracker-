@@ -39,12 +39,3 @@ Documentation for the project (Docusaurus) lives in `docs/` if you want a separa
 5. Open the URL Next prints (usually `http://localhost:3000`).
 
 **Production build:** from `web-app`, run `npm run build` then `npm start`.
-
-## Run the docs site (optional)
-
-1. Go to the `docs` folder.
-2. Run `npm install` then `npm start` to preview the Docusaurus site locally.
-
-## License
-
-This repository is provided as a personal / learning project unless you add your own license file.
